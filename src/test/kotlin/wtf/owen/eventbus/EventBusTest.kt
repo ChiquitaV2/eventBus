@@ -1,17 +1,20 @@
 package wtf.owen.eventbus
 
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.LongAdder
+import kotlin.test.BeforeTest
+import kotlin.test.DefaultAsserter.assertTrue
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.fail
 
 class EventBusTest {
 
-    @Before
+    @BeforeTest
     fun setUp() {
         // Reset the EventBus before each test
         val listenersField = EventBus.javaClass.getDeclaredField("listeners")
@@ -46,7 +49,7 @@ class EventBusTest {
             receivedData = it.data
         }
         EventBus.post(AEvent(testData))
-        assertEquals("Received data should match sent data", testData, receivedData)
+        assertEquals(testData, receivedData, "Received data should match sent data")
     }
 
     // Test multiple listeners for the same event
@@ -64,7 +67,7 @@ class EventBusTest {
         listener2.register<AEvent> { executionCount.incrementAndGet() }
 
         EventBus.post(AEvent("test"))
-        assertEquals("Both listeners should have been executed", 2, executionCount.get())
+        assertEquals( 2, executionCount.get(), "Both listeners should have been executed")
     }
 
     // Test unregistering a listener
@@ -83,7 +86,7 @@ class EventBusTest {
         eventHandled = false
         listener.unregister(handler)
         EventBus.post(AEvent("second"))
-        assertFalse("Event should not be handled after unregistering", eventHandled)
+        assertFalse(eventHandled, "Event should not be handled after unregistering")
     }
 
     // Thread safety test
@@ -115,7 +118,7 @@ class EventBusTest {
         executor.shutdown()
 
         val expectedCount = numberOfThreads * eventsPerThread
-        assertEquals("All events from all threads should be handled", expectedCount, executionCount.get())
+        assertEquals(expectedCount, executionCount.get(), "All events from all threads should be handled")
     }
 
     // Event inheritance test
@@ -157,7 +160,7 @@ class EventBusTest {
             eventHandled = true
         }
         EventBus.post(AEvent("test"))
-        assertFalse("Disabled listener should not handle event", eventHandled)
+        assertFalse(eventHandled, "Disabled listener should not handle event")
     }
 
     @Test
@@ -199,7 +202,7 @@ class EventBusTest {
 		println("Handled $numEvents events with $numListeners listeners in $totalTime ms")
 		println("Throughput: ${numEvents / (totalTime / 1000.0)} events/sec")
 
-        assertEquals("All events should be handled by all listeners", (numListeners * numEvents).toLong(), executionCount.sum())
+        assertEquals( (numListeners * numEvents).toLong(), executionCount.sum(), "All events should be handled by all listeners")
     }
 }
 
