@@ -12,6 +12,21 @@ A simple, lightweight, and thread-safe event bus implementation in Kotlin.
 
 Here's a simple example of how to use the event bus:
 
+### Add the EventBus to your project
+```gradle
+repositories {
+    maven {
+        name "quantumRepositorySnapshots"
+        url "https://maven.quantumdev.org/snapshots"
+    }
+}
+dependencies { 
+    implementation "wtf.owen:eventbus:1.0-SNAPSHOT"
+}
+```
+<details>
+  <summary>Create and register listeners Example</summary>
+
 ```kotlin
 // Define an event
 class MyEvent(val message: String) : Event()
@@ -37,6 +52,8 @@ val listener = MyListener()
 // Post an event
 EventBus.post(MyEvent("Hello, World!"))
 ```
+</details>
+
 
 ## Building and Testing
 
